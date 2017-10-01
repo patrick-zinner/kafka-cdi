@@ -35,6 +35,7 @@ import java.lang.annotation.Target;
 public @interface Consumer {
     String[] topics();
     String groupId();
+    String offset() default "latest";
     Class<?> keyType() default String.class;
     Class<? extends ConsumerRebalanceListener> consumerRebalanceListener() default DefaultConsumerRebalanceListener.class;
 }
