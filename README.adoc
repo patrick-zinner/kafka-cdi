@@ -9,7 +9,7 @@ Making it easy to use Apache Kafka's Java client API in a CDI managed environmen
 
 == Getting started
 
-This section gives an overview on how to use the CafDI library!
+This section gives an overview on how to use the Kafka CDI library!
 
 === Maven config
 
@@ -103,7 +103,7 @@ public class MyService {
 
 === JsonObject Serialization
 
-Apache Kafka uses a binary message format, and comes with a handful of handy Serializers and Deserializers, available through the `Serdes` class. The CafDI extension adds a Serde for the `JsonObject`:
+Apache Kafka uses a binary message format, and comes with a handful of handy Serializers and Deserializers, available through the `Serdes` class. The Kafka CDI extension adds a Serde for the `JsonObject`:
 
 ==== JsonObject Serializer
 
