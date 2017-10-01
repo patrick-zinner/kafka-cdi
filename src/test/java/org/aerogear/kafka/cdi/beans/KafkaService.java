@@ -15,7 +15,7 @@
  */
 package org.aerogear.kafka.cdi.beans;
 
-import org.aerogear.kafka.cdi.ServiceInjectionTest;
+import org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
 import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.annotation.Producer;
@@ -36,7 +36,7 @@ public class KafkaService {
 
     public void sendMessage() {
         logger.info("sending message to the topic....");
-        producer.send(ServiceInjectionTest.TOPIC_NAME, "This is only a test");
+        producer.send(ReceiveMessageFromInjectedServiceTest.TOPIC_NAME, "This is only a test");
     }
 
 }

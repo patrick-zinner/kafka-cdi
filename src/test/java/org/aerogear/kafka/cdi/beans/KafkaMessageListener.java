@@ -15,7 +15,7 @@
  */
 package org.aerogear.kafka.cdi.beans;
 
-import org.aerogear.kafka.cdi.ServiceInjectionTest;
+import org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest;
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.beans.mock.MessageReceiver;
 import org.slf4j.Logger;
@@ -31,8 +31,8 @@ public class KafkaMessageListener {
     private final Logger logger = LoggerFactory.getLogger(KafkaMessageListener.class);
 
     @Consumer(
-            topics = ServiceInjectionTest.TOPIC_NAME,
-            groupId = ServiceInjectionTest.TOPIC_NAME+"_annotation",
+            topics = ReceiveMessageFromInjectedServiceTest.TOPIC_NAME,
+            groupId = ReceiveMessageFromInjectedServiceTest.TOPIC_NAME+"_annotation",
             consumerRebalanceListener = MyConsumerRebalanceListener.class
     )
     public void onMessage(final String simplePayload) {
