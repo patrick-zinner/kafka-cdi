@@ -39,13 +39,16 @@ public abstract class KafkaClusterTestBase extends AbstractTestBase {
             throw new IllegalStateException();
         }
         dataDir = Testing.Files.createTestingDirectory("cluster");
-        kafkaCluster = new KafkaCluster().usingDirectory(dataDir).withPorts(2181, 9092);
+        kafkaCluster = new KafkaCluster().usingDirectory(dataDir)
+                .deleteDataPriorToStartup(true)
+                .deleteDataUponShutdown(true)
+                .withPorts(2181, 9092);
         return kafkaCluster;
     }
 
     @BeforeClass
     public static void setUp() throws IOException {
-        kafkaCluster = kafkaCluster().deleteDataPriorToStartup(true).addBrokers(1).startup();
+        kafkaCluster = kafkaCluster().addBrokers(1).startup();
     }
 
     @AfterClass
