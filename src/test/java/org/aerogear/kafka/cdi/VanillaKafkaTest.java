@@ -63,25 +63,21 @@ public class VanillaKafkaTest extends KafkaClusterTestBase {
         final String consumerId = topicName;
         kafkaCluster.createTopic(topicName, 1, 1);
 
-
-
-        Properties pconfig = kafkaCluster.useTo().getProducerProperties(producerId);
-        pconfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        pconfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-
-        producer = new KafkaProducer<>(pconfig);
-
-        producer.send(new ProducerRecord(topicName, "Hello"));
-
-        Properties cconfig = kafkaCluster.useTo().getConsumerProperties(consumerId, consumerId, OffsetResetStrategy.EARLIEST);
-        cconfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        cconfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-
-        consumer = new KafkaConsumer(cconfig);
-
+        final Properties consumerProperties = kafkaCluster.useTo().getConsumerProperties(consumerId, consumerId, OffsetResetStrategy.EARLIEST);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumer = new KafkaConsumer(consumerProperties);
         consumer.subscribe(Arrays.asList(topicName));
 
-        final CountDownLatch latch = new CountDownLatch(1);
+        final Properties producerProperties = kafkaCluster.useTo().getProducerProperties(producerId);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        producer = new KafkaProducer<>(producerProperties);
+
+        producer.send(new ProducerRecord(topicName, "Hello"));
+        producer.send(new ProducerRecord(topicName, "Hello"));
+
+        final CountDownLatch latch = new CountDownLatch(2);
         final ConsumerRecords<String, String> records = consumer.poll(1000);
         for (final ConsumerRecord<String, String> record : records) {
             assertThat(record.value()).isEqualTo("Hello");
