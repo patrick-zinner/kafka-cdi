@@ -80,13 +80,28 @@ public class MyListenerService {
   /**
    * Simple listener that receives messages from the Kafka broker
     */
-  @Consumer(topic = "myTopic", groupId = "myGroupID")
+  @Consumer(topics = "myTopic", groupId = "myGroupID")
   public void receiver(final String key, final String value) {
     logger.info("That's what I got: (key: " + key + " , value:" +  value + ")");
   }
 ]
 ----
 
+=== Initial `KStream` and `KTable` support for Stream Processing:
+
+With the `@KafkaStream` annotation the libary supports the Kafka Streams API:
+[source,java]
+----
+@KafkaStream(input = "push_messages_metrics", output = "successMessagesPerJob2")
+public KTable successMessagesPerJobTransformer(final KStream<String, String> source) {
+    final KTable<String, Long> successCountsPerJob = source.filter((key, value) -> value.equals("Success"))
+        .groupByKey()
+        .count("successMessagesPerJob");
+    return successCountsPerJob;
+    }
+----
+
+The method accepts a `KStream` instance from the `input` topic, inside the method body some (simple) stream processing can be done, and as return value we support either `KStream` or `KTable`. The entire setup is handled by the library itself.
 
 
 === Global Configuration of the Kafka cluster
