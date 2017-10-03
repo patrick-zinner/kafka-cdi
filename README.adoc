@@ -62,8 +62,8 @@ public class MyListenerService {
   /**
    * Simple listener that receives messages from the Kafka broker
     */
-  @Consumer(topics = "myTopic", groupId = "myGroupID", keyType = Integer.class)
-  public void receiver(String message) {
+  @Consumer(topics = "myTopic", groupId = "myGroupID")
+  public void receiver(final String message) {
     logger.info("That's what I got: " + message);
   }
 ]
