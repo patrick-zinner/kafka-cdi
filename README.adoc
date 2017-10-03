@@ -110,7 +110,7 @@ A minimal of configuration is currently needed. For that there is a `@KafkaConfi
 
 [source,java]
 ----
-@KafkaConfig(bootstrapServers = "#{SOME_HOST}:#{SOME_PORT}")
+@KafkaConfig(bootstrapServers = "#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}")
 public class MyService {
    ...
 }
