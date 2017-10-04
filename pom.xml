@@ -20,12 +20,12 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>21</version>
+    <version>25</version>
   </parent>
 
   <groupId>org.aerogear.kafka</groupId>
   <artifactId>kafka-cdi-extension</artifactId>
-  <version>0.0.12-SNAPSHOT</version>
+  <version>0.0.10-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>kafka-cdi</name>
   <description>simple CDI extension for Apache Kafka</description>
