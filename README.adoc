@@ -9,7 +9,9 @@ Making it easy to use Apache Kafka's Java client API in a CDI managed environmen
 
 == Getting started
 
-This section gives an overview on how to use the Kafka CDI library!
+See the library in action link:https://www.youtube.com/watch?v=JEgj3l0TUA4[here]!
+
+The section below gives an overview on how to use the Kafka CDI library!
 
 === Maven config
 
