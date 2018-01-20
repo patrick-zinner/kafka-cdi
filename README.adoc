@@ -68,7 +68,7 @@ public class MyListenerService {
   public void receiver(final String message) {
     logger.info("That's what I got: " + message);
   }
-]
+}
 ----
 
 Receiving the key and the value is also possible:
@@ -86,7 +86,7 @@ public class MyListenerService {
   public void receiver(final String key, final String value) {
     logger.info("That's what I got: (key: " + key + " , value:" +  value + ")");
   }
-]
+}
 ----
 
 === Initial `KStream` and `KTable` support for Stream Processing:
@@ -179,6 +179,7 @@ We use this IP address when inside our `@KafkaConfig` annotation that our _Produ
 
 === Running on Openshift 
 
-For Apache Kafka on Openshift please check this repository 
+For Apache Kafka on Openshift please check this repository:
 
-https://github.com/EnMasseProject/barnabas
+https://github.com/strimzi/strimzi
+
