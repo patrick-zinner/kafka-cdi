@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 
 public class VerySimpleEnvironmentResolver {
 
+    private VerySimpleEnvironmentResolver() {
+        // no-op
+    }
+
     //#{KAFKA_SERVICE_HOST}:#{KAFKA_SERVICE_PORT}
 
     public static String simpleBootstrapServerResolver(final String rawExpression) {

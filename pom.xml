@@ -71,6 +71,9 @@
           <systemPropertyVariables>
             <KAFKA_SERVICE_HOST>localhost:9092</KAFKA_SERVICE_HOST>
           </systemPropertyVariables>
+          <environmentVariables>
+            <TOPIC_NAME>ServiceInjectionTest</TOPIC_NAME>
+          </environmentVariables>
         </configuration>
       </plugin>
     </plugins>
