@@ -31,12 +31,12 @@ public class KafkaMessageListener {
     private final Logger logger = LoggerFactory.getLogger(KafkaMessageListener.class);
 
     @Consumer(
-            topics = ReceiveMessageFromInjectedServiceTest.TOPIC_NAME,
+            topics = "#{TOPIC_NAME}",
             groupId = ReceiveMessageFromInjectedServiceTest.TOPIC_NAME+"_annotation",
             consumerRebalanceListener = MyConsumerRebalanceListener.class
     )
     public void onMessage(final String simplePayload) {
-        logger.trace("Got {} ", simplePayload);
+        logger.info("Got message: {} ", simplePayload);
         receiver.ack();
     }
 }

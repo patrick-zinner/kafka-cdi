@@ -17,6 +17,7 @@ package org.aerogear.kafka.impl;
 
 import org.aerogear.kafka.DefaultConsumerRebalanceListener;
 import org.aerogear.kafka.cdi.annotation.Consumer;
+import org.aerogear.kafka.cdi.extension.VerySimpleEnvironmentResolver;
 import org.aerogear.kafka.serialization.CafdiSerdes;
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import static org.apache.kafka.clients.CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
@@ -103,7 +105,11 @@ public class DelegationKafkaConsumer implements Runnable {
 
     public void initialize(final String bootstrapServers, final AnnotatedMethod annotatedMethod, final BeanManager beanManager) {
         final Consumer consumerAnnotation = annotatedMethod.getAnnotation(Consumer.class);
-        this.topics = Arrays.asList(consumerAnnotation.topics());
+
+        this.topics = Arrays.asList(consumerAnnotation.topics()).stream()
+                .map(VerySimpleEnvironmentResolver::simpleBootstrapServerResolver)
+                .collect(Collectors.toList());
+
         final String groupId = consumerAnnotation.groupId();
         final Class<?> recordKeyType = consumerAnnotation.keyType();
 
