@@ -1,0 +1,12 @@
+= Releasing Kafka-CDI to maven central
+
+With the correct setup user account on `oss.sonatype` servers, and a correctly configured `gpg`, we use the Maven release plugin to run the release.
+
+It's a two step process of `mvn release:prepare`, followed by `mvn release:perform`, while both need some extra arguments, like:
+
+[source,bash]
+----
+mvn release:prepare -Dgpg.useagent=true -Darguments=-Dgpg.passphrase=XYZ_SUPER -Pjboss-release,gpg-sign
+mvn release:perform -Dgpg.useagent=true -Darguments=-Dgpg.passphrase=XYZ_SUPER -Pjboss-release,gpg-sign
+----
+
