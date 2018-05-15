@@ -32,7 +32,7 @@ public class KafkaMessageListener {
 
     @Consumer(
             topics = "#{TOPIC_NAME}",
-            groupId = ReceiveMessageFromInjectedServiceTest.TOPIC_NAME+"_annotation",
+            groupId = "#{GROUP_ID}",
             consumerRebalanceListener = MyConsumerRebalanceListener.class
     )
     public void onMessage(final String simplePayload) {

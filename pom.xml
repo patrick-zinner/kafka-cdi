@@ -73,6 +73,7 @@
           </systemPropertyVariables>
           <environmentVariables>
             <TOPIC_NAME>ServiceInjectionTest</TOPIC_NAME>
+            <GROUP_ID>ServiceInjectionTest_annotation</GROUP_ID>
           </environmentVariables>
         </configuration>
       </plugin>
