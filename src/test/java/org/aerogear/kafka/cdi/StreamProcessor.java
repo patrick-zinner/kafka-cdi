@@ -25,7 +25,7 @@ public class StreamProcessor {
     Logger logger = LoggerFactory.getLogger(StreamProcessor.class);
 
     @KafkaStream(input = "input_topic2", output = "output_topic")
-    public KStream tableTransformer(final KStream<String, String> source) {
+    public KStream<String, Long> tableTransformer(final KStream<String, String> source) {
 
         logger.trace("Initial setup");
 

@@ -74,15 +74,18 @@ public class DelegationStreamProcessor {
         try {
             final Object sink = annotatedProcessorMethod.getJavaMember().invoke(processorInstance, source);
 
+            final Class<?> retKeyType = (Class<?>) ((ParameterizedType) annotatedProcessorMethod.getJavaMember().getGenericReturnType()).getActualTypeArguments()[0];
+            final Class<?> retValType = (Class<?>) ((ParameterizedType) annotatedProcessorMethod.getJavaMember().getGenericReturnType()).getActualTypeArguments()[1];
+
             if (sink instanceof KStream) {
 
                 final KStream streamSink = (KStream) sink;
-                streamSink.through(Serdes.String(), Serdes.Long(), streamAnnotation.output());
+                streamSink.through(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType), streamAnnotation.output());
 
             } else if (sink instanceof KTable) {
 
                 final KTable tableSink = (KTable) sink;
-                tableSink.to(Serdes.String(), Serdes.Long(), streamAnnotation.output());
+                tableSink.to(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType), streamAnnotation.output());
             }
 
         } catch (IllegalAccessException | InvocationTargetException e) {
