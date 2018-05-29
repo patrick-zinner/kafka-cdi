@@ -17,13 +17,12 @@ package org.aerogear.kafka.impl;
 
 import org.aerogear.kafka.cdi.annotation.KafkaStream;
 import org.aerogear.kafka.serialization.CafdiSerdes;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -54,12 +52,12 @@ public class DelegationStreamProcessor {
 
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "org-aerogear-kafka-cdi-" + UUID.randomUUID().toString());
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG,  CafdiSerdes.serdeFrom(keyType).getClass());
-        properties.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, CafdiSerdes.serdeFrom(valType).getClass());
+        properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,  CafdiSerdes.serdeFrom(keyType).getClass());
+        properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, CafdiSerdes.serdeFrom(valType).getClass());
         properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 3000L);
 
         final StreamsConfig cfg = new StreamsConfig(properties);
-        final KStreamBuilder builder = new KStreamBuilder();
+        final StreamsBuilder builder = new StreamsBuilder();
 
         final KStream source = builder.stream(streamAnnotation.input());
 
@@ -80,12 +78,13 @@ public class DelegationStreamProcessor {
             if (sink instanceof KStream) {
 
                 final KStream streamSink = (KStream) sink;
-                streamSink.through(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType), streamAnnotation.output());
+                streamSink.through(streamAnnotation.output(), Produced.with(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType)));
 
             } else if (sink instanceof KTable) {
 
                 final KTable tableSink = (KTable) sink;
-                tableSink.to(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType), streamAnnotation.output());
+                tableSink.toStream()
+                        .to(streamAnnotation.output(), Produced.with(CafdiSerdes.serdeFrom(retKeyType), CafdiSerdes.serdeFrom(retValType)));
             }
 
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -94,7 +93,7 @@ public class DelegationStreamProcessor {
 
         // go!
         try {
-            streams = new KafkaStreams(builder, cfg);
+            streams = new KafkaStreams(builder.build(), cfg);
 
             streams.setStateListener((newState, oldState) -> {
                 logger.trace("OLD STATE {}", oldState);
