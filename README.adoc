@@ -95,7 +95,7 @@ With the `@KafkaStream` annotation the libary supports the Kafka Streams API:
 [source,java]
 ----
 @KafkaStream(input = "push_messages_metrics", output = "successMessagesPerJob2")
-public KTable successMessagesPerJobTransformer(final KStream<String, String> source) {
+public KTable<String, Long> successMessagesPerJobTransformer(final KStream<String, String> source) {
     final KTable<String, Long> successCountsPerJob = source.filter((key, value) -> value.equals("Success"))
         .groupByKey()
         .count("successMessagesPerJob");
