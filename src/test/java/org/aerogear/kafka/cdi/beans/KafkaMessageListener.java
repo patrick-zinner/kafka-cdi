@@ -15,12 +15,12 @@
  */
 package org.aerogear.kafka.cdi.beans;
 
-import org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest;
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.beans.mock.MessageReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 public class KafkaMessageListener {
@@ -29,6 +29,11 @@ public class KafkaMessageListener {
     private MessageReceiver receiver;
 
     private final Logger logger = LoggerFactory.getLogger(KafkaMessageListener.class);
+
+    @PostConstruct
+    public void setup() {
+        logger.info("Bean is ready!");
+    }
 
     @Consumer(
             topics = "#{TOPIC_NAME}",
