@@ -33,6 +33,7 @@ import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -54,9 +55,9 @@ public class DelegationKafkaConsumer implements Runnable {
      * True if a consumer is running; otherwise false
      */
     private final AtomicBoolean running = new AtomicBoolean(Boolean.TRUE);
+    private final Properties properties = new Properties();
 
     private Object consumerInstance;
-    final Properties properties = new Properties();
     private KafkaConsumer<?, ?> consumer;
     private List<String> topics;
     private AnnotatedMethod annotatedListenerMethod;
@@ -130,9 +131,9 @@ public class DelegationKafkaConsumer implements Runnable {
         final Set<Bean<?>> beans = beanManager.getBeans(annotatedListenerMethod.getJavaMember().getDeclaringClass());
         final Bean<?> propertyResolverBean = beanManager.resolve(beans);
         final CreationalContext<?> creationalContext = beanManager.createCreationalContext(propertyResolverBean);
+        final Type consumerTpye = annotatedListenerMethod.getJavaMember().getDeclaringClass();
 
-        consumerInstance = beanManager.getReference(propertyResolverBean,
-                annotatedListenerMethod.getJavaMember().getDeclaringClass(), creationalContext);
+        consumerInstance = beanManager.getReference(propertyResolverBean, consumerTpye, creationalContext);
     }
 
     @Override
