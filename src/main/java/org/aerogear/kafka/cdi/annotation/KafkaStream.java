@@ -29,4 +29,5 @@ import java.lang.annotation.Target;
 public @interface KafkaStream {
     String input();
     String output();
+    long commitInterval() default 3000L;
 }

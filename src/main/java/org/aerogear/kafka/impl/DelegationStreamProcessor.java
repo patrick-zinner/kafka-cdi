@@ -55,7 +55,7 @@ public class DelegationStreamProcessor {
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, CafdiSerdes.serdeFrom(keyType).getClass());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, CafdiSerdes.serdeFrom(valType).getClass());
-        properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 3000L);
+        properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, streamAnnotation.commitInterval());
 
         final StreamsConfig cfg = new StreamsConfig(properties);
         final StreamsBuilder builder = new StreamsBuilder();
