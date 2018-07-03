@@ -16,17 +16,28 @@
 package org.aerogear.kafka.cdi.beans;
 
 import org.aerogear.kafka.cdi.annotation.Consumer;
+import org.aerogear.kafka.cdi.annotation.ForTopic;
 import org.aerogear.kafka.cdi.beans.mock.MessageReceiver;
+import org.apache.kafka.common.header.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import static org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest.EXTENDED_PRODUCER_TOPIC_NAME;
+import static org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest.SIMPLE_PRODUCER_TOPIC_NAME;
+
 public class KafkaMessageListener {
 
     @Inject
-    private MessageReceiver receiver;
+    @ForTopic(SIMPLE_PRODUCER_TOPIC_NAME)
+    private MessageReceiver simpleTopicReceiver;
+
+
+    @Inject
+    @ForTopic(EXTENDED_PRODUCER_TOPIC_NAME)
+    private MessageReceiver extendedTopicReceiver;
 
     private final Logger logger = LoggerFactory.getLogger(KafkaMessageListener.class);
 
@@ -36,12 +47,22 @@ public class KafkaMessageListener {
     }
 
     @Consumer(
-            topics = "#{TOPIC_NAME}",
+            topics = "#{SIMPLE_TOPIC_NAME}",
             groupId = "#{GROUP_ID}",
             consumerRebalanceListener = MyConsumerRebalanceListener.class
     )
     public void onMessage(final String simplePayload) {
         logger.info("Got message: {} ", simplePayload);
-        receiver.ack();
+        simpleTopicReceiver.ack();
+    }
+
+    @Consumer(
+            topics = "#{EXTENDED_TOPIC_NAME}",
+            groupId = "#{GROUP_ID}",
+            consumerRebalanceListener = MyConsumerRebalanceListener.class
+    )
+    public void onMessage(final String key, final String simplePayload, final Headers headers) {
+        logger.info("Got message: {}||{}||{} ",key, simplePayload, headers);
+        extendedTopicReceiver.ack();
     }
 }

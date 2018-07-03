@@ -28,6 +28,9 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 @RunWith(Arquillian.class)
 public class ServiceInjectionTest extends KafkaClusterTestBase {
 
@@ -43,8 +46,12 @@ public class ServiceInjectionTest extends KafkaClusterTestBase {
     private KafkaService service;
 
     @Test
-    public void nonNullProducer() {
-        Assertions.assertThat(service.returnProducer()).isNotNull();
+    public void nonNullSimpleProducer() {
+        Assertions.assertThat(service.returnSimpleProducer()).isNotNull();
     }
 
+    @Test
+    public void nonNullExtendedProducer() {
+        assertThat(service.returnExtendedProducer(), notNullValue());
+    }
 }

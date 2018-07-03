@@ -107,7 +107,7 @@ public class DelegationKafkaConsumer implements Runnable {
     public void initialize(final String bootstrapServers, final AnnotatedMethod annotatedMethod, final BeanManager beanManager) {
         final Consumer consumerAnnotation = annotatedMethod.getAnnotation(Consumer.class);
 
-        this.topics = Arrays.asList(consumerAnnotation.topics()).stream()
+        this.topics = Arrays.stream(consumerAnnotation.topics())
                 .map(VerySimpleEnvironmentResolver::simpleBootstrapServerResolver)
                 .collect(Collectors.toList());
 
@@ -140,14 +140,16 @@ public class DelegationKafkaConsumer implements Runnable {
     public void run() {
         try {
             consumer.subscribe(topics, consumerRebalanceListener);
-            logger.trace("subscribed to {}", topics);
+            logger.info("subscribed to {}", topics);
             while (isRunning()) {
                 final ConsumerRecords<?, ?> records = consumer.poll(100);
                 for (final ConsumerRecord<?, ?> record : records) {
                     try {
                         logger.trace("dispatching payload {} to consumer", record.value());
 
-                        if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 2) {
+                        if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 3) {
+                            annotatedListenerMethod.getJavaMember().invoke(consumerInstance, record.key(), record.value(), record.headers());
+                        }else if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 2) {
                             annotatedListenerMethod.getJavaMember().invoke(consumerInstance, record.key(), record.value());
 
                         } else {
@@ -169,6 +171,8 @@ public class DelegationKafkaConsumer implements Runnable {
                 logger.trace("Exception", e);
                 throw e;
             }
+        } catch (Exception e) {
+            logger.error("Exception", e);
         } finally {
             logger.info("Close the consumer.");
             consumer.close();

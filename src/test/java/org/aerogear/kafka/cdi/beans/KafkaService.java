@@ -15,12 +15,17 @@
  */
 package org.aerogear.kafka.cdi.beans;
 
+import org.aerogear.kafka.ExtendedKafkaProducer;
+import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
-import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.annotation.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 @KafkaConfig(bootstrapServers = "#{KAFKA_SERVICE_HOST}")
 public class KafkaService {
@@ -30,13 +35,27 @@ public class KafkaService {
     @Producer
     private SimpleKafkaProducer<Integer, String> producer;
 
-    public SimpleKafkaProducer returnProducer() {
+    @Producer
+    private ExtendedKafkaProducer<Integer, String> extendedKafkaProducer;
+
+    public SimpleKafkaProducer returnSimpleProducer() {
         return producer;
+    }
+
+    public ExtendedKafkaProducer returnExtendedProducer() {
+        return extendedKafkaProducer;
     }
 
     public void sendMessage() {
         logger.info("sending message to the topic....");
-        producer.send(ReceiveMessageFromInjectedServiceTest.TOPIC_NAME, "This is only a test");
+        producer.send(ReceiveMessageFromInjectedServiceTest.SIMPLE_PRODUCER_TOPIC_NAME, "This is only a test");
+    }
+
+    public void sendMessageWithHeader() {
+        logger.info("sending message with header to the topic....");
+        Map<String, byte[]> headers = new HashMap<>();
+        headers.put("header.key", "header.value".getBytes(Charset.forName("UTF-8")));
+        extendedKafkaProducer.send(ReceiveMessageFromInjectedServiceTest.EXTENDED_PRODUCER_TOPIC_NAME, "This is only a second test", headers);
     }
 
 }

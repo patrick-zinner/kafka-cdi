@@ -15,18 +15,30 @@
  */
 package org.aerogear.kafka.cdi.beans.mock;
 
+import org.aerogear.kafka.cdi.annotation.ForTopic;
 import org.mockito.Mockito;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import static org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest.EXTENDED_PRODUCER_TOPIC_NAME;
+import static org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest.SIMPLE_PRODUCER_TOPIC_NAME;
+
 @ApplicationScoped
 public class MockProvider {
 
-    private MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
+    private MessageReceiver simpleTopicReceiver = Mockito.mock(MessageReceiver.class);
+    private MessageReceiver extendedTopicReceiver = Mockito.mock(MessageReceiver.class);
 
     @Produces
-    public MessageReceiver receiver() {
-        return receiver;
+    @ForTopic(SIMPLE_PRODUCER_TOPIC_NAME)
+    public MessageReceiver simpleReceiver() {
+        return simpleTopicReceiver;
+    }
+
+    @Produces
+    @ForTopic(EXTENDED_PRODUCER_TOPIC_NAME)
+    public MessageReceiver extendedReceiver() {
+        return extendedTopicReceiver;
     }
 }
