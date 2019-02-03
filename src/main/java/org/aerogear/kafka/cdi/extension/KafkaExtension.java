@@ -15,6 +15,7 @@
  */
 package org.aerogear.kafka.cdi.extension;
 
+import org.aerogear.kafka.ExtendedKafkaProducer;
 import org.aerogear.kafka.cdi.annotation.Consumer;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
 import org.aerogear.kafka.impl.DelegationKafkaConsumer;
@@ -70,7 +71,7 @@ public class KafkaExtension<X> implements Extension {
     private final Logger logger = LoggerFactory.getLogger(KafkaExtension.class);
 
 
-    public void kafkaConfig(@Observes @WithAnnotations(KafkaConfig.class) ProcessAnnotatedType pat) {
+    public void kafkaConfig(@Observes @WithAnnotations(KafkaConfig.class) ProcessAnnotatedType<X> pat) {
         logger.trace("Kafka config scanning type: " + pat.getAnnotatedType().getJavaClass().getName());
 
         final AnnotatedType<X> annotatedType = pat.getAnnotatedType();
@@ -83,7 +84,7 @@ public class KafkaExtension<X> implements Extension {
         }
     }
 
-    public void registerListeners(@Observes @WithAnnotations({Consumer.class, KafkaStream.class}) ProcessAnnotatedType pat) {
+    public void registerListeners(@Observes @WithAnnotations({Consumer.class, KafkaStream.class}) ProcessAnnotatedType<X> pat) {
 
         logger.trace("scanning type: " + pat.getAnnotatedType().getJavaClass().getName());
         final AnnotatedType<X> annotatedType = pat.getAnnotatedType();
@@ -143,13 +144,9 @@ public class KafkaExtension<X> implements Extension {
     }
 
     public void beforeShutdown(@Observes final BeforeShutdown bs) {
-        managedConsumers.forEach(delegationKafkaConsumer -> {
-            delegationKafkaConsumer.shutdown();
-        });
+        managedConsumers.forEach(DelegationKafkaConsumer::shutdown);
 
-        managedProducers.forEach(managedProducer -> {
-            managedProducer.close();
-        });
+        managedProducers.forEach(org.apache.kafka.clients.producer.Producer::close);
     }
 
     public <X> void processInjectionTarget(@Observes ProcessInjectionTarget<X> pit) {
@@ -167,7 +164,7 @@ public class KafkaExtension<X> implements Extension {
 
                     if (annotation != null) {
 
-                        if (field.getType().isAssignableFrom(SimpleKafkaProducer.class)) {
+                        if (field.getType().isAssignableFrom(SimpleKafkaProducer.class) || field.getType().isAssignableFrom(ExtendedKafkaProducer.class)) {
                             field.setAccessible(Boolean.TRUE);
 
                             final Serde<?> keySerde = CafdiSerdes.serdeFrom((Class<?>)  ((ParameterizedType)field.getGenericType()).getActualTypeArguments()[0]);
@@ -236,7 +233,7 @@ public class KafkaExtension<X> implements Extension {
         }
 
         // submit the consumer
-        executorService.submit(delegationKafkaConsumer);
+        executorService.execute(delegationKafkaConsumer);
     }
 
     private org.apache.kafka.clients.producer.Producer createInjectionProducer(final String bootstrapServers, final Class<?> keySerializerClass, final Class<?> valSerializerClass, final Serializer<?> keySerializer, final Serializer<?> valSerializer ) {

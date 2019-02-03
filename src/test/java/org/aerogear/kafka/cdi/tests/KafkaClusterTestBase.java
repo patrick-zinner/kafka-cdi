@@ -42,7 +42,7 @@ public abstract class KafkaClusterTestBase extends AbstractTestBase {
         kafkaCluster = new KafkaCluster().usingDirectory(dataDir)
                 .deleteDataPriorToStartup(true)
                 .deleteDataUponShutdown(true)
-                .withPorts(2181, 9092);
+                .withPorts(2282, 9098);
         return kafkaCluster;
     }
 
