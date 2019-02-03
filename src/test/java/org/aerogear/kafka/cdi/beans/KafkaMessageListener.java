@@ -61,8 +61,8 @@ public class KafkaMessageListener {
             groupId = "#{GROUP_ID}",
             consumerRebalanceListener = MyConsumerRebalanceListener.class
     )
-    public void onMessage(final String key, final String simplePayload, final Headers headers) {
+    public void onMessage(final Integer key, final String simplePayload, final Headers headers) {
         logger.info("Got message: {}||{}||{} ",key, simplePayload, headers);
-        extendedTopicReceiver.ack();
+        extendedTopicReceiver.ack(key, simplePayload, headers);
     }
 }

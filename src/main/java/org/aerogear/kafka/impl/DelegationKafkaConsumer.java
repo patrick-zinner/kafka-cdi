@@ -83,7 +83,7 @@ public class DelegationKafkaConsumer implements Runnable {
 
     private Class<?> consumerKeyType(final Class<?> defaultKeyType, final AnnotatedMethod annotatedMethod) {
 
-        if (annotatedMethod.getJavaMember().getParameterTypes().length == 2) {
+        if (annotatedMethod.getJavaMember().getParameterTypes().length >= 2) {
             return annotatedMethod.getJavaMember().getParameterTypes()[0];
         } else {
             return defaultKeyType;
@@ -92,7 +92,7 @@ public class DelegationKafkaConsumer implements Runnable {
 
     private Class<?> consumerValueType(final AnnotatedMethod annotatedMethod) {
 
-        if (annotatedMethod.getJavaMember().getParameterTypes().length == 2) {
+        if (annotatedMethod.getJavaMember().getParameterTypes().length >= 2) {
             return annotatedMethod.getJavaMember().getParameterTypes()[1];
         } else {
             return annotatedMethod.getJavaMember().getParameterTypes()[0];
@@ -149,7 +149,7 @@ public class DelegationKafkaConsumer implements Runnable {
 
                         if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 3) {
                             annotatedListenerMethod.getJavaMember().invoke(consumerInstance, record.key(), record.value(), record.headers());
-                        }else if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 2) {
+                        } else if (annotatedListenerMethod.getJavaMember().getParameterTypes().length == 2) {
                             annotatedListenerMethod.getJavaMember().invoke(consumerInstance, record.key(), record.value());
 
                         } else {
