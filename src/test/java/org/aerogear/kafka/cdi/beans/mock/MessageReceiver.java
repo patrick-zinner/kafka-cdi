@@ -15,7 +15,11 @@
  */
 package org.aerogear.kafka.cdi.beans.mock;
 
+import org.apache.kafka.common.header.Headers;
+
 public interface MessageReceiver {
 
     void ack();
+
+    void ack(Integer key, String value, Headers expectedHeaders);
 }

@@ -55,7 +55,7 @@ public class KafkaService {
         logger.info("sending message with header to the topic....");
         Map<String, byte[]> headers = new HashMap<>();
         headers.put("header.key", "header.value".getBytes(Charset.forName("UTF-8")));
-        extendedKafkaProducer.send(ReceiveMessageFromInjectedServiceTest.EXTENDED_PRODUCER_TOPIC_NAME, "This is only a second test", headers);
+        extendedKafkaProducer.send(ReceiveMessageFromInjectedServiceTest.EXTENDED_PRODUCER_TOPIC_NAME, 42, "This is only a second test", headers);
     }
 
 }

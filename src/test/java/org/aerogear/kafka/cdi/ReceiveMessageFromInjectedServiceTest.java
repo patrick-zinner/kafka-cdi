@@ -28,6 +28,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -40,7 +42,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -99,6 +104,8 @@ public class ReceiveMessageFromInjectedServiceTest extends KafkaClusterTestBase 
             }
         }
 
+        Thread.sleep(2000);
+
         Mockito.verify(receiver, Mockito.times(1)).ack();
     }
 
@@ -131,6 +138,11 @@ public class ReceiveMessageFromInjectedServiceTest extends KafkaClusterTestBase 
             }
         }
 
-        Mockito.verify(receiver, Mockito.times(1)).ack();
+        Thread.sleep(2000);
+
+        List<Header> headersList = Arrays.asList(new RecordHeader("header.key", "header.value".getBytes(Charset.forName("UTF-8"))));
+        RecordHeaders expectedHeaders = new RecordHeaders(headersList);
+
+        Mockito.verify(receiver, Mockito.times(1)).ack(42, "This is only a second test", expectedHeaders);
     }
 }
