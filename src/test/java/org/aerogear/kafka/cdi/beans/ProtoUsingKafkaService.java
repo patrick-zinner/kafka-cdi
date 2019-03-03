@@ -15,11 +15,11 @@
  */
 package org.aerogear.kafka.cdi.beans;
 
-import com.example.tutorial.AddressBookProtos;
 import org.aerogear.kafka.SimpleKafkaProducer;
 import org.aerogear.kafka.cdi.ReceiveMessageFromInjectedServiceTest;
 import org.aerogear.kafka.cdi.annotation.KafkaConfig;
 import org.aerogear.kafka.cdi.annotation.Producer;
+import org.aerogear.kafka.cdi.proto.AddressBookProtos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,12 +15,12 @@
  */
 package org.aerogear.kafka.cdi;
 
-import com.example.tutorial.AddressBookProtos;
 import org.aerogear.kafka.cdi.annotation.ForTopic;
 import org.aerogear.kafka.cdi.beans.KafkaService;
 import org.aerogear.kafka.cdi.beans.ProtoUsingKafkaService;
 import org.aerogear.kafka.cdi.beans.mock.MessageReceiver;
 import org.aerogear.kafka.cdi.beans.mock.MockProvider;
+import org.aerogear.kafka.cdi.proto.AddressBookProtos;
 import org.aerogear.kafka.cdi.tests.AbstractTestBase;
 import org.aerogear.kafka.cdi.tests.KafkaClusterTestBase;
 import org.apache.kafka.clients.consumer.*;
